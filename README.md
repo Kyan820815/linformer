@@ -18,6 +18,7 @@ Linformer: Self-Attention with Linear Complexity
 * nhead: number of head
 * depth: how many encoder or decoder of one pass for transformer
 * emb_dim: embedding size
+* parameter_sharing: what level of parameter sharing to use.
  
 
 
