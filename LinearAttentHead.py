@@ -1,0 +1,76 @@
+import numpy as np
+import tensorflow as tf
+
+class LinearAttentionHead(tf.keras.Model):
+    """
+    Linear attention, as proposed by the linformer paper
+    """
+    def __init__(self, dim, dropout, E_proj, F_proj, causal_mask, full_attention=False):
+        super(LinearAttentionHead, self).__init__()
+        """
+        full_attention if true means original transformer with O(n^2) time and space complexity
+        """
+        self.E = E_proj
+        self.F = F_proj
+        self.dim = dim
+        self.dropout = tf.nn.Dropout(dropout)
+        self.P_bar = None
+        self.full_attention = full_attention
+        self.causal_mask = causal_mask
+        self.is_proj_tensor = tf.Tensor(E_proj)
+
+    def call(self, Q, K, V, **kwarg):
+        """
+        Q: Q * W_q
+        K: K * W_k
+        V: V * W_v
+        """
+        input_mask = kwargs["input_mask"] if "input_mask" in kwargs else None
+        embeddings_mask = kwargs["embeddings_mask"] if "embeddings_mask" in kwargs else None
+
+        if input_mask is not None:
+            # masking for K, V
+            mask = input_mask[:,:,None] # make mask to 3-dim
+            zero_mat = tf.zeros((mast.shape))
+            K = tf.where(~mask, zeros_mat, K)
+            V = tf.where(~mask, zeros_mat, V)
+            del zero_mat
+            del mask
+
+        if embeddings_mask is not None:
+            # masking for Q
+            mask = embeddings_mask[:,:,None] # make mask to 3-dim
+            zero_mat = tf.zeros((mast.shape))
+            Q = tf.where(~mask, zeros_mat, Q)
+            del zero_mat
+            del mask
+        
+        # compute E * K * W_k if needed
+        K = tf.transpose(K, perm=[0, 2, 1])
+        if not self.full_attention:
+            # use implementation of the paper
+            E = tf.convert_to_tensor(self.E) if not self.is_proj_tensor else self.E
+            K = tf.matmul(K, E)
+
+        Q = tf.matmul(Q, K)
+
+        P_bar = Q/tf.math.sqrt(self.dim)
+        if self.causal_mask is not None:
+            one_mat = tf.ones((self.causal_mask.shape))
+            P_bar = tf.where(~self.causal_mask, one_mat*float('-inf'), P_bar)
+            P_bar = P_bar.masked_fill_(~self.causal_mask, float('-inf'))
+        P_bar = tf.nn.softmax(P_bar, axis=2)
+
+        P_bar = self.dropout(dropout)
+
+        # compute F * V * W_v if needed
+        if not self.full_attention:
+            V = tf.transpose(V, perm=[0, 2, 1])
+            F = tf.convert_to_t nsor(self.F) if not self.is_proj_tensor else self.F
+            V = tf.matmul(V, self.F)
+            V = tf.transpose(V, perm=[0, 2, 1])
+        
+        linear_head = tf.matmul(P_bar, V)
+
+        return linear_head
+
