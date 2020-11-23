@@ -28,20 +28,20 @@ class LinearAttentionHead(tf.keras.Model):
         input_mask = kwargs["input_mask"] if "input_mask" in kwargs else None
         embeddings_mask = kwargs["embeddings_mask"] if "embeddings_mask" in kwargs else None
 
+        # masking for K, V
         if input_mask is not None:
-            # masking for K, V
-            mask = input_mask[:,:,None] # make mask to 3-dim
+            mask = input_mask
             zero_mat = tf.zeros((mast.shape))
-            K = tf.where(~mask, zeros_mat, K)
-            V = tf.where(~mask, zeros_mat, V)
+            K = tf.where(mask^1, zero_mat, K)
+            V = tf.where(mask^1, zero_mat, V)
             del zero_mat
             del mask
 
+        # masking for Q
         if embeddings_mask is not None:
-            # masking for Q
-            mask = embeddings_mask[:,:,None] # make mask to 3-dim
+            mask = embeddings_mask
             zero_mat = tf.zeros((mast.shape))
-            Q = tf.where(~mask, zeros_mat, Q)
+            Q = tf.where(mask^1, zero_mat, Q)
             del zero_mat
             del mask
         
@@ -56,9 +56,8 @@ class LinearAttentionHead(tf.keras.Model):
 
         P_bar = Q/tf.math.sqrt(self.dim)
         if self.causal_mask is not None:
-            one_mat = tf.ones((self.causal_mask.shape))
-            P_bar = tf.where(~self.causal_mask, one_mat*float('-inf'), P_bar)
-            P_bar = P_bar.masked_fill_(~self.causal_mask, float('-inf'))
+            inf_mat = tf.convert_to_tensor(np.ones((self.causal_mask.shape))*np.NINF)
+            P_bar = tf.where(self.causal_mask^1, inf_mat, P_bar)
         P_bar = tf.nn.softmax(P_bar, axis=2)
 
         P_bar = self.dropout(dropout)
@@ -66,7 +65,7 @@ class LinearAttentionHead(tf.keras.Model):
         # compute F * V * W_v if needed
         if not self.full_attention:
             V = tf.transpose(V, perm=[0, 2, 1])
-            F = tf.convert_to_t nsor(self.F) if not self.is_proj_tensor else self.F
+            F = tf.convert_to_tensor(self.F) if not self.is_proj_tensor else self.F
             V = tf.matmul(V, self.F)
             V = tf.transpose(V, perm=[0, 2, 1])
         
