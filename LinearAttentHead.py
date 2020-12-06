@@ -1,7 +1,8 @@
 import numpy as np
 import tensorflow as tf
 
-class LinearAttentionHead(tf.keras.Model):
+
+class LinearAttentionHead(tf.keras.layers.Layer):
     """
     Linear attention, as proposed by the linformer paper
     """
@@ -13,13 +14,13 @@ class LinearAttentionHead(tf.keras.Model):
         self.E = E_proj
         self.F = F_proj
         self.dim = dim
-        self.dropout = tf.nn.Dropout(dropout)
+        self.dropout = tf.keras.layers.Dropout(dropout)
         self.P_bar = None
         self.full_attention = full_attention
         self.causal_mask = causal_mask
-        self.is_proj_tensor = tf.Tensor(E_proj)
+        self.is_proj_tensor = tf.is_tensor(E_proj)
 
-    def call(self, Q, K, V, **kwarg):
+    def call(self, Q, K, V, **kwargs):
         """
         Q: Q * W_q
         K: K * W_k
@@ -30,18 +31,18 @@ class LinearAttentionHead(tf.keras.Model):
 
         # masking for K, V
         if input_mask is not None:
-            mask = input_mask
-            zero_mat = tf.zeros((mast.shape))
-            K = tf.where(mask^1, zero_mat, K)
-            V = tf.where(mask^1, zero_mat, V)
+            mask = input_mask[:,:,None]
+            zero_mat = tf.zeros((mask.shape))
+            K = tf.where(mask==False, zero_mat, K)
+            V = tf.where(mask==False, zero_mat, V)
             del zero_mat
             del mask
 
         # masking for Q
         if embeddings_mask is not None:
-            mask = embeddings_mask
-            zero_mat = tf.zeros((mast.shape))
-            Q = tf.where(mask^1, zero_mat, Q)
+            mask = embeddings_mask[:,:,None]
+            zero_mat = tf.zeros((mask.shape))
+            Q = tf.where(mask==False, zero_mat, Q)
             del zero_mat
             del mask
         
@@ -49,24 +50,28 @@ class LinearAttentionHead(tf.keras.Model):
         K = tf.transpose(K, perm=[0, 2, 1])
         if not self.full_attention:
             # use implementation of the paper
-            E = tf.convert_to_tensor(self.E) if not self.is_proj_tensor else self.E
-            K = tf.matmul(K, E)
+            if self.is_proj_tensor:
+                K = tf.matmul(K, E)
+            else:
+                K = self.E(K)
 
         Q = tf.matmul(Q, K)
 
-        P_bar = Q/tf.math.sqrt(self.dim)
+        P_bar = Q/tf.math.sqrt(float(self.dim))
         if self.causal_mask is not None:
             inf_mat = tf.convert_to_tensor(np.ones((self.causal_mask.shape))*np.NINF)
             P_bar = tf.where(self.causal_mask^1, inf_mat, P_bar)
         P_bar = tf.nn.softmax(P_bar, axis=2)
 
-        P_bar = self.dropout(dropout)
+        P_bar = self.dropout(P_bar)
 
         # compute F * V * W_v if needed
         if not self.full_attention:
             V = tf.transpose(V, perm=[0, 2, 1])
-            F = tf.convert_to_tensor(self.F) if not self.is_proj_tensor else self.F
-            V = tf.matmul(V, self.F)
+            if self.is_proj_tensor:
+                K = tf.matmul(V, F)
+            else:
+                V = self.F(V)
             V = tf.transpose(V, perm=[0, 2, 1])
         
         linear_head = tf.matmul(P_bar, V)

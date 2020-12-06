@@ -1,0 +1,13 @@
+setuptools==41.2.0
+tensorflow==2.3.0
+matplotlib==3.1.1
+gym==0.17.2
+ghast==0.1.0
+dgl==0.5.1
+future==0.18.2
+numpy==1.17.3
+periodictable==1.5.1
+tensorflow-gan==2.0.0
+tensorflow-hub==0.9.0
+imageio==2.9.0
+tqdm==4.48.2

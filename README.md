@@ -5,6 +5,8 @@ Linformer: Self-Attention with Linear Complexity
 ```
 	git clone git@github.com:Kyan820815/CSCI1470-Final-Project.git
 	cd CSCI1470-Final-Project
+	# check and install required package
+	pip install -r requirements.txt
 ```
 
 
