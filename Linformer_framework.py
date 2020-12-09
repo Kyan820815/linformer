@@ -113,7 +113,7 @@ class LinformerLM(tf.keras.Model):
         if emb_dim != channels:
             self.linformer = ProjectInOut(self.linformer, emb_dim, channels)
 
-        self.to_logits = identity if return_emb else tf.keras.layers.Dense(num_tokens)
+        self.to_logits = identity if return_emb else tf.keras.layers.Dense(num_tokens, activation='softmax')
 
     def call(self, tensor, **kwargs):
         """

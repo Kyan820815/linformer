@@ -18,7 +18,6 @@ def pad_corpus(encode_txt, decode_txt):
     :return: A tuple of: (list of padded sentences for ENCODE, list of padded sentences for DECODE)
     """
     encode_padded_sentences = []
-
     for line in encode_txt:
         if len(line) == 0:
             continue
