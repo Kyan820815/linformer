@@ -1,6 +1,10 @@
 import tensorflow as tf
 import numpy as np
 
+"""
+Utility function used in linear transformer model
+"""
+
 
 def identity(x, *args, **kwargs):
     return x

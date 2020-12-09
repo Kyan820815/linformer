@@ -2,6 +2,10 @@ import tensorflow as tf
 import numpy as np
 from Linformer_framework import LinformerLM
 
+"""
+Example using of LinformerLM as encoder and decoder
+"""
+
 encoder = LinformerLM(
     num_tokens=10000,
     input_size=512,

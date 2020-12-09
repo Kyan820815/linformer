@@ -5,7 +5,7 @@ from multihead_attention import MHAttention
 
 class Linformer(tf.keras.Model):
     """
-    My attempt at reproducing the Linformer Paper
+    Reproducing the Linformer Paper
     https://arxiv.org/pdf/2006.04768.pdf
     """
     def __init__(self, input_size, channels, dim_k, dim_ff=256, dim_d=None, dropout_ff=0.15,
@@ -87,6 +87,12 @@ class Linformer(tf.keras.Model):
 class LinformerLM(tf.keras.Model):
     """
     A wrapper function to accept LM tasks, inspired by https://github.com/lucidrains/sinkhorn-transformer
+    Five layer as this transformer:
+    (1) embed each word in the input batch of sentences
+    (2) apply positional embedding to embedding word vector
+    (3) dropout layer
+    (4) linear transformer layer
+    (5) return logit if in decoder; otherwise, return encode_txt
     """
     def __init__(self, num_tokens, input_size, channels,
                        dim_k=64, dim_ff=1024, dim_d=None,
@@ -130,6 +136,7 @@ class LinformerLM(tf.keras.Model):
 class LinformerEncDec(tf.keras.Model):
     """
     A complete seq -> seq translation task. Complete with an encoder and a decoder module.
+    Top Level of encoder & decder seq2seq model
     """
     def __init__(self, enc_num_tokens, enc_input_size, enc_channels, dec_num_tokens, dec_input_size, dec_channels,
                        enc_dim_k=64, enc_dim_ff=1024, enc_dim_d=None, enc_ff_intermediate=None, dec_ff_intermediate=None,
@@ -156,7 +163,7 @@ class LinformerEncDec(tf.keras.Model):
 
     def call(self, x, y=None, **kwargs):
         """
-        Input is (batch_size, seq_len), and all items are ints from [0, num_tokens-1]
+        Input is (batch_size, input_size), and all items are ints from [0, num_tokens-1]
         """
         encoder_output = self.encoder(x, **kwargs)
         y = y if y is not None else x
@@ -180,9 +187,9 @@ class LinformerEncDec(tf.keras.Model):
         """
         Calculates the model cross-entropy loss after one forward pass
 
-        :param prbs:  float tensor, word prediction probabilities [batch_size x window_size x english_vocab_size]
-        :param labels:  integer tensor, word prediction labels [batch_size x window_size]
-        :param mask:  tensor that acts as a padding mask [batch_size x window_size]
+        :param prbs:  float tensor, word prediction probabilities [batch_size x input_size x dec_vocab_size]
+        :param labels:  integer tensor, word prediction labels [batch_size x input_size]
+        :param mask:  tensor that acts as a padding mask [batch_size x input_size]
         :return: the loss of the model as a tensor
         """
         prbs_masked = tf.boolean_mask(prbs, mask)

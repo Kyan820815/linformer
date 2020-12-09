@@ -88,6 +88,9 @@ def test(model, test_enc_lng, test_dec_lng, dec_lng_padding_index):
 
 
 def save_result(result_list):
+    """
+    Save list of each {update_id, perplexity, accuracy} into file
+    """
     if hp.FULL_ATTENTION == True:
         path = "{result_path}N_{input_size}_standard.txt".format(result_path=hp.RESULT_PATH, 
                                                                  input_size=hp.INPUT_SIZE)
@@ -100,6 +103,9 @@ def save_result(result_list):
 
 
 def load_result():
+    """
+    Load list of each {update_id, perplexity, accuracy} into file
+    """
     if hp.FULL_ATTENTION == True:
         path = "{result_path}N_{input_size}_standard.txt".format(result_path=hp.RESULT_PATH, 
                                                                   input_size=hp.INPUT_SIZE)
@@ -113,7 +119,13 @@ def load_result():
 
 
 def main(): 
-    
+    """
+    (1) load training and test data
+    (2) create model based on the settings in hyperparameter
+    (3) train the model
+    (4) save the result from training
+    (5) test the model
+    """
     # result path
     if not os.path.exists(hp.RESULT_PATH):
         os.makedirs(hp.RESULT_PATH)
