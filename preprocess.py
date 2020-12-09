@@ -10,6 +10,7 @@ START_TOKEN = "*START*"
 UNK_TOKEN = "*UNK*"
 ##########DO NOT CHANGE#####################
 
+
 def pad_corpus(encode_txt, decode_txt):
     """
     :param encode_txt: list of ENCODE sentences
@@ -103,7 +104,7 @@ def get_data(enc_training_file, dec_training_file, enc_test_file, dec_test_file)
     enc_test_pad, dec_test_pad = pad_corpus(enc_test, dec_test)
 
     #4) Build vocab for encode (see build_vocab)
-    enc_vocab, enc_pt_id = build_vocab(enc_train_pad)
+    enc_vocab, _ = build_vocab(enc_train_pad)
 
     #5) Build vocab for decode (see build_vocab)
     dec_vocab, dec_pt_id = build_vocab(dec_train_pad)

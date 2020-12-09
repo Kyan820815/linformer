@@ -1,7 +1,6 @@
 import tensorflow as tf
-import numpy as np
-from util import *
-from MHAttention import *
+from util import identity, gen_causal_mask, get_EF, Residual, PositionalEmbedding, ProjectInOut, FeedForward
+from multihead_attention import MHAttention
 
 
 class Linformer(tf.keras.Model):
@@ -75,7 +74,7 @@ class Linformer(tf.keras.Model):
         """
         Input is (batch_size, seq_len, channels)
         """
-        bt, n, c = tensor.shape
+        _, n, c = tensor.shape # [batch_size, window_size, channel_size]
         assert n == self.input_size, "This tensor is of the wrong size. Dimension 1 has to match the `input_size` flag"
         assert c == self.channels, "This tensor is of the wrong size. Dimension 2 has to match the `channels` flag"
         assert "embeddings" not in kwargs or self.decoder_mode, "If decoding, needs to be initialized with `decoder_mode=True`"
@@ -173,7 +172,7 @@ class LinformerEncDec(tf.keras.Model):
         :return: scalar tensor of accuracy of the batch between 0 and 1
         """
         decoded_symbols = tf.argmax(input=prbs, axis=2)
-        accuracy = tf.reduce_mean(tf.boolean_mask(tf.cast(tf.equal(decoded_symbols, labels), dtype=tf.float32),mask))
+        accuracy = tf.reduce_mean(tf.boolean_mask(tf.cast(tf.equal(decoded_symbols, labels), dtype=tf.float32), mask))
 
         return accuracy
 

@@ -32,7 +32,7 @@ def get_EF(input_size, dim, method="learnable", head_dim=None, bias=True):
     """
     assert method == "learnable" or method == "convolution" or method == "no_params", "The method flag needs to be either 'learnable', 'convolution', or 'no_params'!"
     if method == "convolution":
-        conv = tf.keras.layers.Conv1d(head_dim, head_dim, kernel_size=int(input_size/dim), stride=int(input_size/dim))
+        conv = tf.keras.layers.Conv1D(head_dim, head_dim, kernel_size=int(input_size/dim), stride=int(input_size/dim))
         return conv
     if method == "no_params":
         mat = tf.zeros((input_size, dim))

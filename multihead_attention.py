@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from util import get_EF
-from LinearAttentHead import *
+from linear_attenthead import LinearAttentionHead
 
 
 class MHAttention(tf.keras.layers.Layer):

@@ -8,9 +8,10 @@ import hyperparameters as hp
 def train(model, train_enc_lng, train_dec_lng, dec_lng_padding_index):
     data_size = train_enc_lng.shape[0]
     update_id = 0
-    for epoch in range(hp.EPOCHS):
+    for epoch_id in range(hp.EPOCHS):
+        print("Epoch {epoch_id}:".format(epoch_id=epoch_id))
         for i in range(0, data_size, hp.BATCH_SIZE):
-            print("update {update_id}:".format(update_id=update_id))
+            print("Update {update_id}:".format(update_id=update_id))
             enc_inputs = train_enc_lng[i:i+hp.BATCH_SIZE, :]
 
             batch_dec_lng = train_dec_lng[i:i+hp.BATCH_SIZE, :]
@@ -35,7 +36,7 @@ def test(model, test_enc_lng, test_dec_lng, dec_lng_padding_index):
     total_loss = 0
     word_cnt = 0
 
-    for i in range(0, input_size, hp.BATCH_SIZE):
+    for i in range(0, data_size, hp.BATCH_SIZE):
         # print("test", i, input_size)
         enc_inputs = test_enc_lng[i:i+hp.BATCH_SIZE, :]
 
@@ -84,6 +85,7 @@ def main():
     train(model, train_enc, train_dec, dec_padding_index)
     # test the model
     perplexity, accuracy = test(model, test_enc, test_dec, dec_padding_index)
+    print("model perplexity: {per}, accuracy: {acc}".format(per=perplexity, acc=accuracy))
 
 if __name__ == '__main__':
     main()
