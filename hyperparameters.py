@@ -10,7 +10,7 @@ FULL_ATTENTION = False  # Note!!! Change to False if you want to test DIM_K
 BATCH_SIZE = 100
 CHANNEL = int(2048/INPUT_SIZE) # we have a constraint that INPUT_SIZE X CHANNEL == 2048
 DIM_D = int(CHANNEL/4) # we assume number of head is 4
-DIM_FF = 1024
+DIM_FF = CHANNEL
 DEPTH = 1
 
 LEARNING_RATE = 0.001
