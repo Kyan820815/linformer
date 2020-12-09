@@ -40,3 +40,5 @@ print(dec_output.shape) # (1, 512, 10000)
 
 encoder.summary()
 decoder.summary()
+encoder.linformer.summary()
+decoder.linformer.summary()

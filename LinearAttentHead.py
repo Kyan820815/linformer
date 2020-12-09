@@ -59,8 +59,8 @@ class LinearAttentionHead(tf.keras.layers.Layer):
 
         P_bar = Q/tf.math.sqrt(float(self.dim))
         if self.causal_mask is not None:
-            inf_mat = tf.convert_to_tensor(np.ones((self.causal_mask.shape))*np.NINF)
-            P_bar = tf.where(self.causal_mask^1, inf_mat, P_bar)
+            inf_mat = tf.cast(tf.convert_to_tensor(np.ones((self.causal_mask.shape))*np.NINF), tf.float32)
+            P_bar = tf.where(self.causal_mask==False, inf_mat, P_bar)
         P_bar = tf.nn.softmax(P_bar, axis=2)
 
         P_bar = self.dropout(P_bar)

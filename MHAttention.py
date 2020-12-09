@@ -3,9 +3,10 @@ import numpy as np
 from util import get_EF
 from LinearAttentHead import *
 
+
 class MHAttention(tf.keras.layers.Layer):
-    def __init__(self, input_size, dim, channels, dim_k, nhead, dropout, checkpoint_level,
-            parameter_sharing, E_proj, F_proj, full_attention, causal_mask, w_o_intermediate_dim=None, decoder_mode=False, method="learnable"):
+    def __init__(self, input_size, dim, channels, dim_k, nhead, dropout, parameter_sharing, 
+        E_proj, F_proj, full_attention, causal_mask, w_o_intermediate_dim=None, decoder_mode=False, method="learnable"):
         super(MHAttention, self).__init__()
         self.heads = [] # a list of head
         self.input_size = input_size # window_size for encoder & decoder (# of words in each batch)

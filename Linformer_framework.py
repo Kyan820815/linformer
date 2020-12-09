@@ -3,6 +3,7 @@ import numpy as np
 from util import *
 from MHAttention import *
 
+
 class Linformer(tf.keras.Model):
     """
     My attempt at reproducing the Linformer Paper
@@ -137,9 +138,12 @@ class LinformerEncDec(tf.keras.Model):
                        enc_full_attention=False, enc_include_ff=True, enc_w_o_intermediate_dim=None, enc_emb_dim=None, enc_method="learnable",
                        dec_dim_k=64, dec_dim_ff=1024, dec_dim_d=None, dec_dropout_ff=0.1, dec_nhead=4, dec_depth=2, dec_dropout=0.05,
                        dec_parameter_sharing="layerwise", dec_k_reduce_by_layer=0, dec_full_attention=False, dec_include_ff=True,
-                       dec_w_o_intermediate_dim=None, dec_emb_dim=None, dec_method="learnable", activation="gelu"):
+                       dec_w_o_intermediate_dim=None, dec_emb_dim=None, dec_method="learnable", activation="gelu", learning_rate=0.001):
 
         super(LinformerEncDec, self).__init__()
+
+        # optimizer and batch size
+        self.optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate)
         self.encoder = LinformerLM(num_tokens=enc_num_tokens, input_size=enc_input_size, channels=enc_channels, dim_d=enc_dim_d, dim_ff=enc_dim_ff,
                                    dim_k=enc_dim_k, dropout_ff=enc_dropout_ff, nhead=enc_nhead, depth=enc_depth, dropout=enc_dropout,
                                    parameter_sharing=enc_parameter_sharing, k_reduce_by_layer=enc_k_reduce_by_layer, ff_intermediate=enc_ff_intermediate,
@@ -158,3 +162,32 @@ class LinformerEncDec(tf.keras.Model):
         encoder_output = self.encoder(x, **kwargs)
         y = y if y is not None else x
         return self.decoder(y, embeddings=encoder_output)
+    
+    def accuracy_function(self, prbs, labels, mask):
+        """
+        Computes the batch accuracy
+
+        :param prbs:  float tensor, word prediction probabilities [batch_size x input_size x dec_vocab_size]
+        :param labels:  integer tensor, word prediction labels [batch_size x input_size]
+        :param mask:  tensor that acts as a padding mask [batch_size x input_size]
+        :return: scalar tensor of accuracy of the batch between 0 and 1
+        """
+        decoded_symbols = tf.argmax(input=prbs, axis=2)
+        accuracy = tf.reduce_mean(tf.boolean_mask(tf.cast(tf.equal(decoded_symbols, labels), dtype=tf.float32),mask))
+
+        return accuracy
+
+    def loss_function(self, prbs, labels, mask):
+        """
+        Calculates the model cross-entropy loss after one forward pass
+
+        :param prbs:  float tensor, word prediction probabilities [batch_size x window_size x english_vocab_size]
+        :param labels:  integer tensor, word prediction labels [batch_size x window_size]
+        :param mask:  tensor that acts as a padding mask [batch_size x window_size]
+        :return: the loss of the model as a tensor
+        """
+        prbs_masked = tf.boolean_mask(prbs, mask)
+        labels_masked = tf.boolean_mask(labels, mask)
+        loss = tf.reduce_sum(tf.keras.losses.sparse_categorical_crossentropy(labels_masked, prbs_masked))
+
+        return loss
