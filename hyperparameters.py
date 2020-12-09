@@ -4,9 +4,9 @@ Linear transformer hyperparameter settings
 
 # CHANGE TO EXPERIMENT
 INPUT_SIZE = 16
-DIM_K = 8
-
-FULL_ATTENTION = False
+DIM_K = 4
+FULL_ATTENTION = False  # Note!!! Change to False if you want to test DIM_K
+                        # True when apply standard transformer
 BATCH_SIZE = 100
 CHANNEL = int(2048/INPUT_SIZE) # we have a constraint that INPUT_SIZE X CHANNEL == 2048
 DIM_D = int(CHANNEL/4) # we assume number of head is 4

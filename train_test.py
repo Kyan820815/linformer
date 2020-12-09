@@ -90,8 +90,8 @@ def test(model, test_enc_lng, test_dec_lng, dec_lng_padding_index):
 def save_result(result_list):
     if hp.FULL_ATTENTION == True:
         path = "{result_path}N_{input_size}_standard.txt".format(result_path=hp.RESULT_PATH, 
-                                                                  input_size=hp.INPUT_SIZE)
-    else:
+                                                                 input_size=hp.INPUT_SIZE)
+    else:   
         path = "{result_path}N_{input_size}_k_{dim_k}.txt".format(result_path=hp.RESULT_PATH, 
                                                                   input_size=hp.INPUT_SIZE, 
                                                                   dim_k=hp.DIM_K)
