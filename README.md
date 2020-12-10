@@ -1,11 +1,11 @@
 # CSCI-1470-Final-Project
 Linformer: Self-Attention with Linear Complexity
 
-This is the implementation from [Linformer: Self-Attention with Linear Complexity](https://arxiv.org/pdf/2006.04768v3.pdf).
+This is the implementation from [Linformer: Self-Attention with Linear Complexity](https://arxiv.org/pdf/2006.04768v3.pdf), which improves transformer by making attention head computation linear $O(n)$ regarding time and space complexity. Originally, vanilla transformer cost $O(n^2)$ in both time and space complexity while computing attention head matrix.
+
 We build the linear transformer model as well as seq2seq training model and provide training and test process to let users know what is the process going on through linear transformer. The data we use is from [bookcorpus](https://github.com/soskek/bookcorpus). We build a method to preprocess the data, padding and tokenize them, construct vocabulary, etc. Also, we save each training result to do further visualizion. 
 
-Through our pre-training result on 1 million words pre-training data set, we conclude the perplexity and accuracy for linear transformer is as good as the vanilla one. Moreover, linear transformer provide better time perfomance. This can be shwon in 
-<strong>model_complexity.exp.py</strong>
+Through our pre-training result on <strong>1 million words pre-training data set</strong>, we conclude that the perplexity and accuracy for linear transformer is as good as the vanilla one. Moreover, linear transformer provide better time perfomance. This can be shwon in <strong>model_complexity.exp.py</strong>
 
 ## Install
 ```
