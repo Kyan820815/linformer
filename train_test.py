@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 import os
 import pickle
-from Linformer_framework import LinformerEncDec
+from linformer_framework import LinformerEncDec
 from preprocess import get_data
 import hyperparameters as hp
 

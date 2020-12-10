@@ -3,11 +3,13 @@ Linear transformer hyperparameter settings
 """
 
 # CHANGE TO EXPERIMENT
-INPUT_SIZE = 16
-DIM_K = 8
+INPUT_SIZE = 16         # window size, or sentence length
+DIM_K = 8               # proposed by the author, main factor to make transformer linaer
 FULL_ATTENTION = False  # Note!!! Change to False if you want to test DIM_K
                         # True when apply standard transformer
-PARAMETER_SHARING="kv"
+PARAMETER_SHARING="kv"  # parameter sharing: (1) layerwise
+                        #                    (2) headwise
+                        #                    (3) kv
     
 # DO NOT CHANGE
 BATCH_SIZE = 100
