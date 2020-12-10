@@ -151,6 +151,7 @@ def main():
             enc_dim_d=hp.DIM_D,
             enc_dim_ff=hp.DIM_FF,
             enc_depth=hp.DEPTH,
+            enc_parameter_sharing=hp.PARAMETER_SHARING,
             dec_num_tokens=len(dec_vocab),        # decoder setting
             dec_input_size=hp.INPUT_SIZE,
             dec_channels=hp.CHANNEL,
@@ -159,6 +160,7 @@ def main():
             dec_dim_d = hp.DIM_D,
             dec_dim_ff=hp.DIM_FF,
             dec_depth=hp.DEPTH,
+            dec_parameter_sharing=hp.PARAMETER_SHARING,
             learning_rate=hp.LEARNING_RATE,activation="relu")
 
     # train the model
