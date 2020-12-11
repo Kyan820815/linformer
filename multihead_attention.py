@@ -5,6 +5,10 @@ from linear_attenthead import LinearAttentionHead
 
 
 class MHAttention(tf.keras.layers.Layer):
+    """
+    (1) generate K Q V dense layer as W_k, W_q, W_v to be used in single head attention computation
+    (2) apply a tranformation layer to cascade all heads to get the output
+    """
     def __init__(self, input_size, dim, channels, dim_k, nhead, dropout, parameter_sharing, 
         E_proj, F_proj, full_attention, causal_mask, w_o_intermediate_dim=None, decoder_mode=False, method="learnable"):
         super(MHAttention, self).__init__()

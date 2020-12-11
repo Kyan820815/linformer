@@ -1,6 +1,6 @@
 # Linformer: Self-Attention with Linear Complexity
 
-This is the implementation from [Linformer: Self-Attention with Linear Complexity](https://arxiv.org/pdf/2006.04768v3.pdf), which improves transformer by making attention head computation linear $O(n)$ regarding time and space complexity. Originally, vanilla transformer cost $O(n^2)$ in both time and space complexity while computing attention head matrix.
+This is the implementation from [Linformer: Self-Attention with Linear Complexity](https://arxiv.org/pdf/2006.04768v3.pdf), which improves transformer by making attention head computation linear O(n) regarding time and space complexity. Originally, vanilla transformer cost O(n^2) in both time and space complexity while computing attention head matrix.
 
 We build the linear transformer model as well as seq2seq training model and provide training and test process to let users know what is the process going on through linear transformer. The data we use is from [bookcorpus](https://github.com/soskek/bookcorpus). We build a method to preprocess the data, padding and tokenize them, construct vocabulary, etc. Also, we save each training result to do further visualizion. 
 
@@ -40,6 +40,10 @@ python plot.py
 * depth: how many encoder or decoder of one pass for transformer
 * emb_dim: embedding size
 * parameter_sharing: what level of parameter sharing to use.
+
+## Data set
+We use a smaller version of bookcorpus, which contains 1M words data set. The training set is already tokenized and can be directly used. Please download it from the below link and put it into the data folder.
+https://drive.google.com/file/d/12lKK2QKpcfDyJ_tXstcyLf2eqigjAiy4/view?usp=sharing
  
 
 
