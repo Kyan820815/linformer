@@ -7,6 +7,10 @@ class Linformer(tf.keras.Model):
     """
     Reproducing the Linformer Paper
     https://arxiv.org/pdf/2006.04768.pdf
+
+    (1) get attention for each word
+    (2) apply add-normlization and residual network layer
+    (3) apply feed forward network layer
     """
     def __init__(self, input_size, channels, dim_k, dim_ff=256, dim_d=None, dropout_ff=0.15,
                  nhead=4, depth=1, dropout=0.1, activation="gelu", parameter_sharing="layerwise",

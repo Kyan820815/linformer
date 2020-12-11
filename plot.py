@@ -6,6 +6,7 @@ from util import load_result
 Visualizetion of experiment result
 """
 
+
 def plot_func(exp_list, color, line):
 	fig = plt.figure(figsize=(8, 8))
 
