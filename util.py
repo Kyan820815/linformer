@@ -1,5 +1,7 @@
 import tensorflow as tf
 import numpy as np
+import hyperparameters as hp
+import pickle
 
 """
 Utility function used in linear transformer model
@@ -123,3 +125,38 @@ class FeedForward(tf.keras.layers.Layer):
         tensor = self.w_2(tensor)
         tensor = self.dropout2(tensor)
         return tensor
+
+
+def save_result(result_list):
+    """
+    Save list of each {update_id, perplexity, accuracy} into file
+    """
+    if hp.FULL_ATTENTION == True:
+        path = "{result_path}N_{input_size}_standard.txt".format(result_path=hp.RESULT_PATH, 
+                                                                 input_size=hp.INPUT_SIZE)
+    else:   
+        path = "{result_path}N_{input_size}_k_{dim_k}.txt".format(result_path=hp.RESULT_PATH, 
+                                                                  input_size=hp.INPUT_SIZE, 
+                                                                  dim_k=hp.DIM_K)
+    with open(path, 'wb') as fp:
+        pickle.dump(result_list, fp)
+
+
+def load_result(input_size=None, full_attention=None, dim_k=None, custom_path=None):
+    """
+    Load list of each {update_id, perplexity, accuracy} into file
+    """
+    if custom_path is not None:
+        path = "{result_path}{custom_path}.txt".format(result_path=hp.RESULT_PATH, custom_path=custom_path)
+    elif full_attention == True:
+        path = "{result_path}N_{input_size}_standard.txt".format(result_path=hp.RESULT_PATH, 
+                                                                  input_size=input_size)
+    else:
+        path = "{result_path}N_{input_size}_k_{dim_k}.txt".format(result_path=hp.RESULT_PATH, 
+                                                                  input_size=input_size, 
+                                                                  dim_k=dim_k)
+    rlist = []
+    with open(path, 'rb') as fp:
+        rlist = pickle.load(fp)
+
+    return rlist
