@@ -1,5 +1,4 @@
-# CSCI-1470-Final-Project
-Linformer: Self-Attention with Linear Complexity
+# Linformer: Self-Attention with Linear Complexity
 
 This is the implementation from [Linformer: Self-Attention with Linear Complexity](https://arxiv.org/pdf/2006.04768v3.pdf), which improves transformer by making attention head computation linear $O(n)$ regarding time and space complexity. Originally, vanilla transformer cost $O(n^2)$ in both time and space complexity while computing attention head matrix.
 
