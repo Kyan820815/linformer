@@ -69,7 +69,7 @@ class LinearAttentionHead(tf.keras.layers.Layer):
         if not self.full_attention:
             V = tf.transpose(V, perm=[0, 2, 1])
             if self.is_proj_tensor:
-                K = tf.matmul(V, self.F)
+                V = tf.matmul(V, self.F)
             else:
                 V = self.F(V)
             V = tf.transpose(V, perm=[0, 2, 1])
